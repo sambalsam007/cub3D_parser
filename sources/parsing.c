@@ -66,11 +66,11 @@ int		read_file_lines(const char *filename, char ***lines)
 	// open file
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		return (print_error("Error: reading in file"), -1);
+		return (print_error("reading in file"), -1);
 	// init with some capacity
 	temp = malloc(sizeof (char *) * capacity);
 	if (!temp)
-		return (close(fd), print_error("Error: memory allocation failed for map lines"), -1);
+		return (close(fd), print_error("memory allocation failed for map lines"), -1);
 
 	// read lines with gnl
 	while ((line = get_next_line(fd)) != NULL)
@@ -92,7 +92,7 @@ int		read_file_lines(const char *filename, char ***lines)
 			new_temp = ft_realloc(temp, old_capacity, sizeof (char *) * capacity);
 			if (!new_temp)
 				return (ft_freearr(temp), free(line),
-					print_error("Error: memory allocation failed for new map lines"), close(fd), -1);
+					print_error("memory allocation failed for new map lines"), close(fd), -1);
 			temp = new_temp;
 		}
 	}
@@ -101,7 +101,7 @@ int		read_file_lines(const char *filename, char ***lines)
 	old_capacity = capacity * sizeof (char *);
 	new_temp = ft_realloc(temp, old_capacity, sizeof (char *) * (line_count + 1));
 	if (!new_temp && line_count > 0)
-		return (ft_freearr(temp), close(fd), print_error("Error: memory allocation failed for new temp map lines"),
+		return (ft_freearr(temp), close(fd), print_error("memory allocation failed for new temp map lines"),
 			-1);
 	temp = new_temp;
 	temp[line_count] = NULL;
@@ -115,11 +115,15 @@ static bool	is_config_line(const char *line)
 	line = skip_leading_whitespaces(line);
 	if (!line || is_empty_line(line))
 		return (false);
-	if (ft_strncmp(line, "NO", 2) == 0 || ft_strncmp(line, "EA", 2) == 0
-		|| ft_strncmp(line, "WE", 2) == 0 || ft_strncmp(line, "SO", 2) == 0) 
+	if ((ft_strncmp(line, "NO", 2) == 0 && (line[2] == ' ' || line[2] == '\t')) ||
+		(ft_strncmp(line, "SO", 2) == 0 && (line[2] == ' ' || line[2] == '\t')) ||
+		(ft_strncmp(line, "WE", 2) == 0 && (line[2] == ' ' || line[2] == '\t')) ||
+		(ft_strncmp(line, "EA", 2) == 0 && (line[2] == ' ' || line[2] == '\t')) ||
+		(ft_strncmp(line, "F", 1) == 0 && (line[1] == ' ' || line[1] == '\t')) ||
+		(ft_strncmp(line, "C", 1) == 0 && (line[1] == ' ' || line[1] == '\t')))
+	{
 		return (true);
-	if (ft_strncmp(line, "F", 1) == 0 || ft_strncmp(line, "C", 1) == 0)
-		return (true);
+	}
 	return (false);
 }
 
@@ -133,16 +137,16 @@ int	parse_rgb(const char *str)
 
 	parts = ft_split(str, ',');
 	if (!parts)
-		return (print_error("Error: memory allocation rgb values"), -1);
+		return (print_error("memory allocation rgb values"), -1);
 	if (ft_arrlen(parts) != 3)
-		return (print_error("Error: RGB format should be R,G,B"),
+		return (print_error("RGB format should be R,G,B"),
 					ft_freearr(parts), -1);
 	r = ft_atoi(parts[0]);
 	g = ft_atoi(parts[1]);
 	b = ft_atoi(parts[2]);
 	ft_freearr(parts);
 	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-		return (print_error("Error: RBG values should be between [0,255]"), -1);
+		return (print_error("RBG values should be between [0,255]"), -1);
 	result = (r << 16) | (g << 8) | b;
 	return (result);
 }
@@ -168,9 +172,11 @@ void	parse_config_line(t_map *map, const char *line)
 bool	validate_map(t_map *map) // TODO
 {
 	if (map->height <= 2 || map->width <= 2)
-		return (print_error("Error: invalid map height or width"), false);
+		return (print_error("invalid map height or width"), false);
 	if (map->floor_color == -1 || map->ceiling_color == -1)
-		return (print_error("Error: floor or ceiling color not set"), false);
+		return (print_error("floor or ceiling color not set"), false);
+	if (!check_single_player(map))
+		return (false);
 	if (!is_map_enclosed(map))
 		return (false);
 	return (true);
@@ -189,25 +195,15 @@ bool	parse_map_content(t_map *map, char **lines, int start_index, int line_count
 	while (i < line_count)
 	{
 		if (!is_map_line(lines[i]))
-			return (print_error("Error: map can only contain whitespaces and \"01NSEW\""), false);
+			return (print_error("map can only contain whitespaces and \"01NSEW\""), false);
     	if (!is_empty_line(lines[i]))
 			map_height++;
 		i++;
 	}
-/*
-	while (i < line_count)
-	{
-		if (!is_map_line(lines[i]))
-			return (print_error("Error: map can only contain whitespaces and \"01NSEW\""), false);
-		if (is_empty_line(lines[i]))
-			return (print_error("Error: empty line found in map"), false);
-		map_height++;
-		i++;
-	}*/
 	// Allocate and fill map
     map->data = malloc(sizeof(char *) * (map_height + 1));
 	if (!map->data)
-		return (print_error("Error: failure mallocing map data"), false);
+		return (print_error("failure mallocing map data"), false);
     i = start_index;
 	while (i < line_count && is_map_line(lines[i]))
 	{
@@ -254,7 +250,7 @@ int	parse_configuration(t_map *map, char **lines, int line_count)
 		{
 		    if (!has_no || !has_so || !has_we || !has_ea || !has_f || !has_c)
         	{
-				return (print_error("Error: map content started before all configs were provided"), -1);
+				return (print_error("map content started before all configs were provided"), -1);
 			}
 			map_started = true;
 			break; // map starts here
@@ -262,7 +258,7 @@ int	parse_configuration(t_map *map, char **lines, int line_count)
 		else if (is_config_line(trimmed))
 		{
 			if (map_started)
-				return (print_error("Error: configuration line after map content has started"), -1);
+				return (print_error("configuration line after map content has started"), -1);
 			if (ft_strncmp(trimmed, "NO", 2) == 0)
 				has_no = true;
 			else if (ft_strncmp(trimmed, "SO", 2) == 0)
@@ -278,21 +274,14 @@ int	parse_configuration(t_map *map, char **lines, int line_count)
 			parse_config_line(map, trimmed);
 		}
 		else
-			return (print_error("Error: unrecognized line in .cub file, make sure each element is seperated from information"), -1);
+			return (print_error("unrecognized line in .cub file, make sure each element is seperated from information"), -1);
 		i++;
 	}
 	if (!map_started)
-		return (print_error("Error: map content not found in file"), -1);
+		return (print_error("map content not found in file"), -1);
 	// 🛑 Check if any config is missing
 	if (!has_no || !has_so || !has_we || !has_ea || !has_f || !has_c)
-		return (print_error("Error: missing configuration element(s)"), -1);
-	// 🛑 Now scan for config lines AFTER the map starts
-	/*for (int j = i; j < line_count; j++)
-	{
-		char *trimmed = skip_leading_whitespaces(lines[j]);
-		if (is_config_line(trimmed))
-			return (print_error("Error: configuration line after map content has started"), -1);
-	}*/
+		return (print_error("missing configuration element(s)"), -1);
 	return (i); // First map line
 }
 

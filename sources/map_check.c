@@ -1,5 +1,31 @@
 #include "../includes/cub3D.h"
 
+bool	check_single_player(t_map *map)
+{
+	int	i;
+	int	j;
+	int	player_count;
+
+	i = 0;
+	j = 0;
+	player_count = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (map->data[i][j])
+		{
+			if (map->data[i][j] == 'N' || map->data[i][j] == 'S'
+				|| map->data[i][j] == 'E' || map->data[i][j] == 'W')
+				player_count++;
+			j++;
+		}
+		i++;
+	}
+	if (player_count != 1)
+		return (print_error("map must contain exactly one player"), false);
+	return (true);
+}
+
 static bool is_valid_surrounding(char **map, int row, int col, int height) {
     char c = map[row][col];
 

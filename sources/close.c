@@ -20,5 +20,6 @@ int	close_window(void)
 
 void	print_error(char *str)
 {
+	printf(BOLD_RED"Error:\n"RESET);
 	printf(BOLD_RED"%s\n"RESET, str);
 }

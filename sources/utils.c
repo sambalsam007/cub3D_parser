@@ -24,7 +24,7 @@ void print_map_data(t_map *data)
 {
     if (!data)
     {
-        printf("Error: No map data to print\n");
+        print_error("nNo map data to print");
         return;
     }
     // Print configuration
@@ -55,6 +55,16 @@ void print_map_data(t_map *data)
 	printf("\n");
 }
 
+void	free_mlx(t_game *game)
+{
+	printf(BOLD_BLUE"Freeing MLX\n"RESET);
+	if (game->window)
+		mlx_destroy_window(game->mlx, game->window);
+	if (game->mlx)
+		mlx_destroy_display(game->mlx);
+	free(game->mlx);
+}
+
 void	free_game(t_game *game)
 {
 	printf(BOLD_BLUE"Freeing game\n"RESET);
@@ -68,4 +78,5 @@ void	free_game(t_game *game)
 		free(game->map.ea_texture);
 	if (game->map.we_texture)
 		free(game->map.we_texture);
+	free_mlx(game);
 }

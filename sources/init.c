@@ -12,6 +12,26 @@
 
 #include "../includes/cub3D.h"
 
+// TODO	init keys, init mouse, init screen buffer, init player
+
+static void	init_mlx(t_game *game)
+{
+	printf(BOLD_BLUE"Initializing MLX\n"RESET);
+	game->mlx = mlx_init();
+	if (!game->mlx)
+	{
+		print_error("could not initialize MLX");
+		exit(1);
+	}
+	game->window = mlx_new_window(game->mlx, WIN_WIDTH, WIN_HEIGHT, "cub3D");
+	if (!game->window)
+	{
+		free_mlx(game);
+		print_error("could not create a window");
+		exit(1);
+	}
+}
+
 static void	init_map(t_game *game)
 {
 	game->map.width = 0;
@@ -24,33 +44,12 @@ static void	init_map(t_game *game)
 	game->map.floor_color = -1; // will point out error
 	game->map.ceiling_color = -1;
 }
-/*
-static t_map	init_map(char *filename)
-{
-	int		fd;
-	char	*line;
-	t_map	map;
-
-	map.data = NULL;
-	map.height = 0;
-	map.width = 0;
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
-		return (print_error("Error opening file"), map);
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		printf("%s", line);
-//		parse_line(game, line); // TODO
-		free(line);
-	}
-	close(fd);
-	return (map);
-}*/
 
 void	init_game(t_game *game)
 {
 	printf(BOLD_BLUE"Initializing game\n"RESET);
 
+	init_mlx(game);
 	init_map(game);
 	return ;
 }

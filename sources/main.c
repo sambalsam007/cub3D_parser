@@ -29,9 +29,9 @@ static bool	is_cub_file(const char *filename)
 static bool	check_input(int argc, char **argv)
 {
 	if (argc != 2 || !argv[1])
-		return (print_error("Correct usage: <./executable> <map.cub>"), false);
+		return (print_error("correct usage: <./executable> <map.cub>"), false);
 	if (!is_cub_file(argv[1]))
-		return (print_error("Error: file must be a .cub extension"), false);
+		return (print_error("file must be a .cub extension"), false);
 	return (true);
 }
 
