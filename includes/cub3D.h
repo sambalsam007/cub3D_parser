@@ -33,6 +33,8 @@
 # define MOUSE_RESET_THROTTLE 6 // mouse resets per second
 # define MIN_FRAME_TIME 0.01667 // 60 FPS
 # define FILE_LINE_CAP 32
+# define IMAGE_SIZE 64
+# define TAB_WIDTH 4
 
 // *** KEYCODES ***
 # define ESC_KEY 65307
@@ -83,29 +85,29 @@ typedef struct s_map
 
 }	t_map;
 
+typedef struct	s_image
+{
+	void	*no_img;
+	void	*so_img;
+	void	*we_img;
+	void	*ea_img;
+}	t_image;
+
 typedef struct s_game
 {
 	t_player	player;
 	t_map		map;
+	t_image		*images;
 	void		*mlx;
 	void		*window;
-	bool		up_key;
-	bool		down_key;
-	bool		left_key;
-	bool		right_key;
-	int			mouse_x;
-	int			mouse_y;
-	int			last_mouse_x;
-	// pixel buffer to store the current screen state
-	u_int32_t	**screen_buffer;
-	bool		is_running;
 }	t_game;
 
 // *** INITIALIZING & PARSING***
-void	init_game(t_game *game);
+bool	init_game(t_game *game);
 bool	parse_cub_file(const char *filename, t_map *map);
 bool	is_map_enclosed(t_map *map);
 bool	check_single_player(t_map *map);
+void	load_in_images(t_game *game);
 
 // *** FREEING ***
 void	free_game(t_game *game);

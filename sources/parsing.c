@@ -14,7 +14,7 @@ bool	is_map_line(const char *line)
 	return (true);
 }
 
-char	*replace_tabs(const char *line, int tab_width)
+char	*replace_tabs(const char *line)
 {
 	int		new_len = 0;
 	char	*result;
@@ -25,7 +25,7 @@ char	*replace_tabs(const char *line, int tab_width)
 
 	// Calculate new length
 	for (i = 0; line[i]; i++)
-		new_len += (line[i] == '\t') ? tab_width : 1;
+		new_len += (line[i] == '\t') ? TAB_WIDTH : 1;
 
 	result = malloc(new_len + 1);
 	if (!result)
@@ -36,7 +36,7 @@ char	*replace_tabs(const char *line, int tab_width)
 	{
 		if (line[i] == '\t')
 		{
-			for (int k = 0; k < tab_width; k++)
+			for (int k = 0; k < TAB_WIDTH; k++)
 				result[j++] = ' ';
 		}
 		else
@@ -76,7 +76,7 @@ int		read_file_lines(const char *filename, char ***lines)
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		//replace tabs with 4 spaces
-		untabbed = replace_tabs(line, 4); // TODO get rid of parameter, use 4 in function itself
+		untabbed = replace_tabs(line);
 		free(line);
 		line = untabbed;
 		// Strip trailing \n and \r
@@ -169,12 +169,12 @@ void	parse_config_line(t_map *map, const char *line)
 		map->ceiling_color = parse_rgb(line + 1);
 }
 
-bool	validate_map(t_map *map) // TODO
+bool	validate_map(t_map *map)
 {
 	if (map->height <= 2 || map->width <= 2)
 		return (print_error("invalid map height or width"), false);
 	if (map->floor_color == -1 || map->ceiling_color == -1)
-		return (print_error("floor or ceiling color not set"), false);
+		return (false);
 	if (!check_single_player(map))
 		return (false);
 	if (!is_map_enclosed(map))
@@ -260,21 +260,45 @@ int	parse_configuration(t_map *map, char **lines, int line_count)
 			if (map_started)
 				return (print_error("configuration line after map content has started"), -1);
 			if (ft_strncmp(trimmed, "NO", 2) == 0)
-				has_no = true;
-			else if (ft_strncmp(trimmed, "SO", 2) == 0)
-				has_so = true;
-			else if (ft_strncmp(trimmed, "WE", 2) == 0)
-				has_we = true;
+			{
+	    		if (has_no)
+        			return (print_error("duplicate NO texture entry"), -1);
+    			has_no = true;
+			}
 			else if (ft_strncmp(trimmed, "EA", 2) == 0)
-				has_ea = true;
+			{
+	    		if (has_ea)
+        			return (print_error("duplicate EA texture entry"), -1);
+    			has_ea = true;
+			}
+			else if (ft_strncmp(trimmed, "SO", 2) == 0)
+			{
+	    		if (has_so)
+        			return (print_error("duplicate SO texture entry"), -1);
+    			has_so = true;
+			}
+			else if (ft_strncmp(trimmed, "WE", 2) == 0)
+			{
+	    		if (has_we)
+        			return (print_error("duplicate WE texture entry"), -1);
+    			has_we = true;
+			}
 			else if (ft_strncmp(trimmed, "F", 1) == 0)
-				has_f = true;
+			{
+	    		if (has_f)
+        			return (print_error("duplicate F texture entry"), -1);
+    			has_f = true;
+			}
 			else if (ft_strncmp(trimmed, "C", 1) == 0)
-				has_c = true;
+			{
+	    		if (has_c)
+        			return (print_error("duplicate C texture entry"), -1);
+    			has_c = true;
+			}
 			parse_config_line(map, trimmed);
 		}
 		else
-			return (print_error("unrecognized line in .cub file, make sure each element is seperated from information"), -1);
+			return (printf(BOLD_RED"Error:\nunrecognized line in .cub file; ,,%s'' make sure each element is seperated from information\n"RESET, lines[i]), -1);
 		i++;
 	}
 	if (!map_started)

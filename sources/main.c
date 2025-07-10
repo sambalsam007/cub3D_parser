@@ -10,9 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO	ERRORS; "Error\n" followed by explicit error message !!!!!!!!!!!!!!
-// TODO	check if files to given paths exist in parser
-
 #include "../includes/cub3D.h"
 
 static bool	is_cub_file(const char *filename)
@@ -43,8 +40,9 @@ int	main(int argc, char **argv)
 		return (1);
 	init_game(&game);
 	if (!parse_cub_file(argv[1], &game.map))
-		return (free_game(&game), 1);
+		return (print_map_data(&game.map), free_game(&game), 1);
 	print_map_data(&game.map);
+	load_in_images(&game);
 	free_game(&game);
 	return (0);
 }

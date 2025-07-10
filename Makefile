@@ -16,6 +16,7 @@ SRC_FILES = $(SRC_DIR)/main.c \
 			$(SRC_DIR)/init.c \
 			$(SRC_DIR)/parsing.c \
 			$(SRC_DIR)/map_check.c \
+			$(SRC_DIR)/mlx.c \
 			$(SRC_DIR)/close.c \
 			$(SRC_DIR)/utils.c
 
@@ -78,3 +79,14 @@ fclean: clean
 re: fclean all 
 
 .PHONY: all clean fclean re debug both
+
+###		Directory containing the .cub map files		###
+TEST_MAPS = $(wildcard maps/*.cub) $(wildcard maps/error/*.cub)
+
+.PHONY: test-all
+
+test-all: $(NAME)
+	@for map in $(TEST_MAPS); do \
+		echo "$(YELLOW)Running with map: $$map$(RESET)"; \
+		./$(NAME) $$map || echo "$(MAGENTA)Failed on: $$map$(RESET)"; \
+	done

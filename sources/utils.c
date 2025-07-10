@@ -65,6 +65,20 @@ void	free_mlx(t_game *game)
 	free(game->mlx);
 }
 
+static void	destroy_images(t_game *game)
+{
+	if (game->images->no_img)
+		mlx_destroy_image(game->mlx, game->images->no_img);
+	if (game->images->ea_img)
+		mlx_destroy_image(game->mlx, game->images->ea_img);
+	if (game->images->so_img)
+		mlx_destroy_image(game->mlx, game->images->so_img);
+	if (game->images->we_img)
+		mlx_destroy_image(game->mlx, game->images->we_img);
+	free(game->images);
+	game->images = NULL;
+}
+
 void	free_game(t_game *game)
 {
 	printf(BOLD_BLUE"Freeing game\n"RESET);
@@ -78,5 +92,6 @@ void	free_game(t_game *game)
 		free(game->map.ea_texture);
 	if (game->map.we_texture)
 		free(game->map.we_texture);
+	destroy_images(game);
 	free_mlx(game);
 }

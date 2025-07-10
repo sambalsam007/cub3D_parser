@@ -1,11 +1,11 @@
-NO ./path/to/north_texture.xpm
-	SO			./path/to/south_texture.xpm
-WE ./path/to/west_texture.xpm     	
-EA	  	   	./path/to/east_texture.xpm
-F	240,200,1
+NO ./textures/wall1.xpm
+	SO			./textures/wall2.xpm
+WE ./textures/wall3.xpm     	
+EA	  	   	./textures/wall3.xpm
+F 240,	 200,1
 C     	222,222,222
 
-		11
+11
 	11111111
 11111000001111
 	1N0001

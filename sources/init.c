@@ -32,6 +32,18 @@ static void	init_mlx(t_game *game)
 	}
 }
 
+static bool	init_images(t_game *game)
+{
+	game->images = malloc(sizeof(t_image));
+	if (!game->images)
+		return (print_error("could not allocate memory for images"), false);
+	game->images->no_img = NULL;
+	game->images->so_img = NULL;
+	game->images->we_img = NULL;
+	game->images->ea_img = NULL;
+	return (true);
+}
+
 static void	init_map(t_game *game)
 {
 	game->map.width = 0;
@@ -45,11 +57,13 @@ static void	init_map(t_game *game)
 	game->map.ceiling_color = -1;
 }
 
-void	init_game(t_game *game)
+bool	init_game(t_game *game)
 {
 	printf(BOLD_BLUE"Initializing game\n"RESET);
 
 	init_mlx(game);
+	if (!init_images(game))
+		return (false);
 	init_map(game);
-	return ;
+	return (true);
 }

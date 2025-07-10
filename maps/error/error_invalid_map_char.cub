@@ -1,12 +1,11 @@
-EA ./blah
-SO ./blah
-WE ./blah
-NO ./blah
+NO ./textures/wall1.xpm
+	SO			./textures/wall2.xpm
+WE ./textures/wall3.xpm     	
+EA	  	   	./textures/wall3.xpm
 F 222, 222, 222
 C 234,198, 134
 
-
-	11111111
+11111111
 10001
-	1N0L01
+1N0L01
 111111
