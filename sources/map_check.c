@@ -26,11 +26,13 @@ bool	check_single_player(t_map *map)
 	return (true);
 }
 
-static bool is_valid_surrounding(char **map, int row, int col, int height) {
-    char c = map[row][col];
+static bool is_valid_surrounding(char **map, int row, int col, int height)
+{
+	char	c;
 
+	c = map[row][col];
     if (c != '0' && c != 'N' && c != 'S' && c != 'E' && c != 'W')
-        return true; // only check playable tiles
+        return (true);
 
     int dx[] = {-1, 1, 0, 0};
     int dy[] = {0, 0, -1, 1};
@@ -40,32 +42,46 @@ static bool is_valid_surrounding(char **map, int row, int col, int height) {
         int ny = col + dy[d];
 
         if (nx < 0 || nx >= height)
-            return false;
+            return (false);
 
         if (ny < 0 || ny >= (int)ft_strlen(map[nx]))
-            return false;
+            return (false);
 
         char neighbor = map[nx][ny];
         if (neighbor == ' ')
-            return false;
+            return (false);
     }
 
-    return true;
+    return (true);
 }
 
-bool is_map_enclosed(t_map *map) {
-    int height = map->height;
+bool is_map_enclosed(t_map *map)
+{
+	int	height;
+	int	row;
+	int	col;
+	int	width;
 
-    for (int row = 0; row < height; row++) {
-        int width = ft_strlen(map->data[row]);
-        for (int col = 0; col < width; col++) {
-            if (!is_valid_surrounding(map->data, row, col, height)) {
-                printf(BOLD_RED"Error:\nMap error at row %d col %d\n"RESET, row, col);
-                return (print_map_data(map), false);
-            }
-        }
-    }
+	height = map->height;
+	row = 0;
+	col = 0;
+	width = 0;
 
-    return true;
+	while (row < height)
+	{
+		width = ft_strlen(map->data[row]);
+		col =  0;
+		while (col < width)
+		{
+			if (!is_valid_surrounding(map->data, row, col, height))
+			{
+				printf(BOLD_RED"Error:\nMap error at row %d col %d\n"RESET, row, col);
+				return (false);
+			}
+			col++;
+		}
+		row++;
+	}
+	return (true);
 }
 

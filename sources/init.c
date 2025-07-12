@@ -53,7 +53,7 @@ static void	init_map(t_game *game)
 	game->map.ea_texture = '\0';
 	game->map.so_texture = '\0';
 	game->map.we_texture = '\0';
-	game->map.floor_color = -1; // will point out error
+	game->map.floor_color = -1;
 	game->map.ceiling_color = -1;
 }
 
