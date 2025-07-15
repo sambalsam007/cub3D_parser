@@ -6,7 +6,7 @@
 /*   By: yde-rudd <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:50:34 by yde-rudd          #+#    #+#             */
-/*   Updated: 2025/02/21 16:53:17 by yde-rudd         ###   ########.fr       */
+/*   Updated: 2025/07/15 10:20:02 by yde-rudd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ static void	destroy_images(t_game *game)
 void	free_game(t_game *game)
 {
 	printf(BOLD_BLUE"Freeing game\n"RESET);
-
 	ft_freearr(game->map.data);
 	if (game->map.no_texture)
 		free(game->map.no_texture);

@@ -6,7 +6,7 @@
 /*   By: yde-rudd <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 17:03:42 by yde-rudd          #+#    #+#             */
-/*   Updated: 2025/03/08 01:52:51 by yde-rudd         ###   ########.fr       */
+/*   Updated: 2025/07/15 14:39:00 by yde-rudd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ typedef struct s_map
 
 }	t_map;
 
-typedef struct	s_image
+typedef struct s_image
 {
 	void	*no_img;
 	void	*so_img;
@@ -105,9 +105,11 @@ typedef struct s_game
 // *** INITIALIZING & PARSING***
 bool	init_game(t_game *game);
 bool	parse_cub_file(const char *filename, t_map *map);
+bool	validate_map(t_map *map);
 bool	is_map_enclosed(t_map *map);
 bool	check_single_player(t_map *map);
-void	load_in_images(t_game *game);
+bool	load_in_images(t_game *game);
+void	init_directions(int *dx, int *dy);
 
 // *** FREEING ***
 void	free_game(t_game *game);

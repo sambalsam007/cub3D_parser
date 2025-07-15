@@ -6,7 +6,7 @@
 /*   By: yde-rudd <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 15:47:17 by yde-rudd          #+#    #+#             */
-/*   Updated: 2025/03/08 01:43:05 by yde-rudd         ###   ########.fr       */
+/*   Updated: 2025/07/15 10:10:35 by yde-rudd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ int	main(int argc, char **argv)
 	if (!parse_cub_file(argv[1], &game.map))
 		return (print_map_data(&game.map), free_game(&game), 1);
 	print_map_data(&game.map);
-	load_in_images(&game);
+	if (!load_in_images(&game))
+		return (free_game(&game), 1);
 	free_game(&game);
 	return (0);
 }

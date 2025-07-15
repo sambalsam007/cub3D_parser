@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_check.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yde-rudd <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 11:02:11 by yde-rudd          #+#    #+#             */
+/*   Updated: 2025/07/15 14:36:47 by yde-rudd         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3D.h"
 
 bool	check_single_player(t_map *map)
@@ -26,36 +38,48 @@ bool	check_single_player(t_map *map)
 	return (true);
 }
 
-static bool is_valid_surrounding(char **map, int row, int col, int height)
+static bool	is_neighbor_valid(char **map, int nx, int ny, int height)
+{
+	if (nx < 0 || nx >= height || ny < 0
+		|| ny >= (int)ft_strlen(map[nx]))
+		return (false);
+	if (map[nx][ny] == ' ')
+		return (false);
+	return (true);
+}
+
+static bool	check_neighbors(char **map, int row, int col, int height)
+{
+	int		dx[4];
+	int		dy[4];
+	int		d;
+	int		nx;
+	int		ny;
+
+	init_directions(dx, dy);
+	d = 0;
+	while (d < 4)
+	{
+		nx = row + dx[d];
+		ny = col + dy[d];
+		if (!is_neighbor_valid(map, nx, ny, height))
+			return (false);
+		d++;
+	}
+	return (true);
+}
+
+static bool	is_valid_surrounding(char **map, int row, int col, int height)
 {
 	char	c;
 
 	c = map[row][col];
-    if (c != '0' && c != 'N' && c != 'S' && c != 'E' && c != 'W')
-        return (true);
-
-    int dx[] = {-1, 1, 0, 0};
-    int dy[] = {0, 0, -1, 1};
-
-    for (int d = 0; d < 4; d++) {
-        int nx = row + dx[d];
-        int ny = col + dy[d];
-
-        if (nx < 0 || nx >= height)
-            return (false);
-
-        if (ny < 0 || ny >= (int)ft_strlen(map[nx]))
-            return (false);
-
-        char neighbor = map[nx][ny];
-        if (neighbor == ' ')
-            return (false);
-    }
-
-    return (true);
+	if (c != '0' && c != 'N' && c != 'S' && c != 'E' && c != 'W')
+		return (true);
+	return (check_neighbors(map, row, col, height));
 }
 
-bool is_map_enclosed(t_map *map)
+bool	is_map_enclosed(t_map *map)
 {
 	int	height;
 	int	row;
@@ -66,18 +90,15 @@ bool is_map_enclosed(t_map *map)
 	row = 0;
 	col = 0;
 	width = 0;
-
 	while (row < height)
 	{
 		width = ft_strlen(map->data[row]);
-		col =  0;
+		col = 0;
 		while (col < width)
 		{
 			if (!is_valid_surrounding(map->data, row, col, height))
-			{
-				printf(BOLD_RED"Error:\nMap error at row %d col %d\n"RESET, row, col);
-				return (false);
-			}
+				return (printf(BOLD_RED"Error:\nMap error at row %d col %d\n"
+						RESET, row, col), false);
 			col++;
 		}
 		row++;
@@ -85,3 +106,15 @@ bool is_map_enclosed(t_map *map)
 	return (true);
 }
 
+bool	validate_map(t_map *map)
+{
+	if (map->height <= 2 || map->width <= 2)
+		return (print_error("invalid map height or width"), false);
+	if (map->floor_color == -1 || map->ceiling_color == -1)
+		return (false);
+	if (!check_single_player(map))
+		return (false);
+	if (!is_map_enclosed(map))
+		return (false);
+	return (true);
+}
