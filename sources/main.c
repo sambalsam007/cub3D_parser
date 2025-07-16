@@ -25,18 +25,18 @@ static bool	is_cub_file(const char *filename)
 
 static bool	check_input(int argc, char **argv)
 {
-	if (argc != 2 || !argv[1])
+	if (argc != 2 || !argv[1]) // er word geen map meegegeven
 		return (print_error("correct usage: <./executable> <map.cub>"), false);
-	if (!is_cub_file(argv[1]))
+	if (!is_cub_file(argv[1])) // check of het een .cub extensie heeft
 		return (print_error("file must be a .cub extension"), false);
 	return (true);
 }
 
-int	main(int argc, char **argv)
+int	main(int argc, char **argv) // arguments is de map
 {
 	t_game	game;
 
-	if (!check_input(argc, argv))
+	if (!check_input(argc, argv)) // geen arguments? stop programma
 		return (1);
 	init_game(&game);
 	if (!parse_cub_file(argv[1], &game.map))

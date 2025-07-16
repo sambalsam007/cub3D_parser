@@ -1,0 +1,3 @@
+main.c
+begrijpen hoe word cub3d .extension gecheckt?
+...
