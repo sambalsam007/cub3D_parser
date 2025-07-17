@@ -1,3 +1,7 @@
 main.c
 begrijpen hoe word cub3d .extension gecheckt?
 ...
+
+main.c
+ft_strrchr ('.')
+test map.extra-dot.cub

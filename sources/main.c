@@ -12,27 +12,34 @@
 
 #include "../includes/cub3D.h"
 
+/* is_cub_file: 
+ * */
+
 static bool	is_cub_file(const char *filename)
 {
-	const char	*dot;
+	const char	*dot; // Q: waarom 'dot'?
 
-	dot = ft_strrchr(filename, '.');
+	dot = ft_strrchr(filename, '.'); // neem enkel de string vanaf '.' (de extensie)
 	if (dot && (ft_strcmp(dot, ".cub") == 0))
 		return (true);
 	else
 		return (false);
 }
 
+/* check_input: "Makkik binnen" 
+ * is er 1 parameter meegegeven met extensie .cub?
+ * return true */
+
 static bool	check_input(int argc, char **argv)
 {
-	if (argc != 2 || !argv[1]) // er word geen map meegegeven
+	if (argc != 2 || !argv[1]) // het programma moet een map meekrijgen
 		return (print_error("correct usage: <./executable> <map.cub>"), false);
-	if (!is_cub_file(argv[1])) // check of het een .cub extensie heeft
+	if (!is_cub_file(argv[1])) // de map moet een .cub extensie hebben
 		return (print_error("file must be a .cub extension"), false);
 	return (true);
 }
 
-int	main(int argc, char **argv) // arguments is de map
+int	main(int argc, char **argv) // geef het programma een map
 {
 	t_game	game;
 
